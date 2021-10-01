@@ -30,7 +30,13 @@ const tableColumns = [
 
 const DraggableTable = () => {
 	const onDragEnd = (result) => {
-		console.log(result)
+		const { destination, source, draggableId } = result
+		if (!destination) {
+			return
+		}
+		if (destination.index === source.index) {
+			return
+		}
 	}
 
 	const customTableWrapper = (props) => (
@@ -38,12 +44,17 @@ const DraggableTable = () => {
 			droppableId="droppable"
 		>
 			{(provided) => (
-				<tbody
-					ref={provided.innerRef}
-					{...props}
-					{...provided.droppableProps}
-				>
-				</tbody>
+				<Fragment>
+					<tbody
+						ref={provided.innerRef}
+						{...props}
+						{...provided.droppableProps}
+					>
+					</tbody>
+					<tfoot>
+						{provided.placeholder}
+					</tfoot>
+				</Fragment>
 			)}
 		</Droppable>
 	)
@@ -88,7 +99,7 @@ const DraggableTable = () => {
 					index,
 					record
 				})}
-				pagination={false}
+
 			/>
 		</DragDropContext>
 	)
