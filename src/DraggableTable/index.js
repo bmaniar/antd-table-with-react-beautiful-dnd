@@ -3,7 +3,7 @@ import { Table, Row, Col, Card, Empty } from "antd";
 import 'antd/dist/antd.css'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 
-const panels = [
+const mockData = [
 	{ id: 'panel-1', header: 'THis is panel 1', text: 'DUMMY ASS' },
 	{ id: 'panel-2', header: 'THis is panel 2', text: 'DUMMY ASS 2' },
 	{ id: 'panel-3', header: 'THis is panel 3', text: 'DUMMY ASS 3' },
@@ -29,6 +29,8 @@ const tableColumns = [
 ]
 
 const DraggableTable = () => {
+	const [tableData, setTableData] = useState(mockData)
+
 	const onDragEnd = (result) => {
 		const { destination, source, draggableId } = result
 		if (!destination) {
@@ -37,6 +39,11 @@ const DraggableTable = () => {
 		if (destination.index === source.index) {
 			return
 		}
+
+		const newTableData = Array.from(tableData)
+		newTableData.splice(source.index, 1) // removing the item
+		newTableData.splice(destination.index, 0, tableData.find(data => data.id === draggableId)) // pushing in the new position
+		setTableData(newTableData)
 	}
 
 	const customTableWrapper = (props) => (
@@ -92,14 +99,14 @@ const DraggableTable = () => {
 	return (
 		<DragDropContext onDragEnd={onDragEnd}>
 			<Table
-				dataSource={panels}
+				dataSource={tableData}
 				columns={tableColumns}
 				components={components}
 				onRow={(record, index) => ({
 					index,
 					record
 				})}
-
+				pagination={false}
 			/>
 		</DragDropContext>
 	)
